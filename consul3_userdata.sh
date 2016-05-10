@@ -19,7 +19,8 @@ docker run --name consul3 --restart=always -h consul3 \
 	-p 8500:8500 \
 	-p 172.17.0.1:53:53 \
 	-p 172.17.0.1:53:53/udp -d \
-	progrium/consul -server  -join 10.1.1.99 -advertise 10.1.2.100
+	progrium/consul -server  -join 10.1.1.99 -advertise 10.1.2.100 \
+	 -ui-dir /ui
 
 echo "service docker start" >> /etc/rc.local
 reboot
