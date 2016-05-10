@@ -143,8 +143,8 @@ aws ec2 authorize-security-group-ingress --group-id $CONSUL_SG --source-group $C
 CONSUL1_USER_DATA=$(cat consul1_userdata.sh|base64)
 CONSUL2_USER_DATA=$(cat consul2_userdata.sh|base64)
 
-CONSUL1=$(aws ec2 run-instances --security-group-ids $CONSUL_SG --instance-type t2.nano --subnet-id $PUBLIC_SUBNET_1 --private-ip-address 10.1.1.99 --associate-public-ip-address --image-id ami-92a948ff --user-data "$CONSUL1_USER_DATA"|jq -r .Instances[0].InstanceId)
+CONSUL1=$(aws ec2 run-instances --security-group-ids $CONSUL_SG --instance-type t2.micro --subnet-id $PUBLIC_SUBNET_1 --private-ip-address 10.1.1.99 --associate-public-ip-address --image-id ami-93e905fe --user-data "$CONSUL1_USER_DATA"|jq -r .Instances[0].InstanceId)
 aws ec2 create-tags --resources $CONSUL1  --tags Key=Name,Value="$VPCNAME"_CONSUL1
-CONSUL2=$(aws ec2 run-instances --security-group-ids $CONSUL_SG --instance-type t2.nano --user-data "$CONSUL1_USER_DATA" --private-ip-address 10.1.2.99  --subnet-id $PUBLIC_SUBNET_2 --associate-public-ip-address --image-id ami-92a948ff|jq -r .Instances[0].InstanceId)
+CONSUL2=$(aws ec2 run-instances --security-group-ids $CONSUL_SG --instance-type t2.micro --user-data "$CONSUL1_USER_DATA" --private-ip-address 10.1.2.99  --subnet-id $PUBLIC_SUBNET_2 --associate-public-ip-address --image-id ami-93e905fe|jq -r .Instances[0].InstanceId)
 aws ec2 create-tags --resources $CONSUL2  --tags Key=Name,Value="$VPCNAME"_CONSUL2
 
