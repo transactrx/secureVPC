@@ -9,7 +9,7 @@ yum install docker -y
 service docker start
 mkdir -p /opt/consuldata
 
-docker run --name consul2 --restart=always -h consul2 \
+docker run --name consul3 --restart=always -h consul3 \
 	-v /opt/consuldata:/data -p 8300:8300 \
 	-p 8301:8301 \
 	-p 8301:8301/udp \
@@ -19,7 +19,7 @@ docker run --name consul2 --restart=always -h consul2 \
 	-p 8500:8500 \
 	-p 172.17.0.1:53:53 \
 	-p 172.17.0.1:53:53/udp -d \
-	progrium/consul -server  -join 10.1.1.99 -advertise 10.1.2.99
+	progrium/consul -server  -join 10.1.1.99 -advertise 10.1.2.100
 
 echo "service docker start" >> /etc/rc.local
 reboot
