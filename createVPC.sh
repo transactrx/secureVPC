@@ -135,7 +135,16 @@ echo "private subnet 2: $PRIVATE_SUBNET_2"
 
 echo "Internet GateWay: $INTERNET_GATEWAY" 
 
+CONSUL_SG=$(aws ec2 create-security-group --vpc-id $VPCID --group-name $VPCNAME"-consul" --description  "$VPCNAME consul service SG"|jq -r .GroupId)
+aws ec2 authorize-security-group-ingress --group-id $CONSUL_SG --source-group $CONSUL_SG --protocol tcp --port 0-65535 
+aws ec2 authorize-security-group-ingress --group-id $CONSUL_SG --source-group $CONSUL_SG --protocol udp --port 0-65535 
+aws ec2 authorize-security-group-ingress --group-id $CONSUL_SG --source-group $CONSUL_SG --protocol icmp --port -1
 
-aws ec2 create-security-group --vpc-id $VPCID --group-name $VPCNAME"-consul" --description  "$VPCNAME consul service SG"
+CONSUL1_USER_DATA=$(cat consul1_userdata.sh|base64)
+CONSUL2_USER_DATA=$(cat consul2_userdata.sh|base64)
 
+CONSUL1=$(aws ec2 run-instances --security-group-ids $CONSUL_SG --instance-type t2.nano --subnet-id $PUBLIC_SUBNET_1 --private-ip-address 10.1.1.99 --associate-public-ip-address --image-id ami-92a948ff --user-data $CONSUL1_USER_DATA|jq -r .Instances[0].InstanceId)
+aws ec2 create-tags --resources $CONSUL1  --tags Key=Name,Value="$VPCNAME"_CONSUL1
+CONSUL2=$(aws ec2 run-instances --security-group-ids $CONSUL_SG --instance-type t2.nano --user-data $CONSUL1_USER_DATA --private-ip-address 10.1.2.99  --subnet-id $PUBLIC_SUBNET_2 --associate-public-ip-address --image-id ami-92a948ff|jq -r .Instances[0].InstanceId)
+aws ec2 create-tags --resources $CONSUL2  --tags Key=Name,Value="$VPCNAME"_CONSUL2
 

@@ -8,6 +8,6 @@ yum update -y
 
 mkdir -p /opt/consuldata
 
-docker run --name consul1 --restart=always -h consul1 	-v /opt/consuldata:/data -p 10.1.1.99:8300:8300 	-p 10.1.1.99:8301:8301 	-p 10.1.1.99:8301:8301/udp 	-p 10.1.1.99:8302:8302 	-p 10.1.1.99:8302:8302/udp 	-p 10.1.1.99:8400:8400 	-p 10.1.1.99:8500:8500 	-p 172.17.0.1:53:53 	-p 172.17.0.1:53:53/udp 	-d 	progrium/consul -server -advertise 10.1.1.99 -bootstrap-expect 3
+docker run --name consul1 --restart=always -h consul1 	-v /opt/consuldata:/data -p 8300:8300 	-p 8301:8301 	-p 8301:8301/udp 	-p 8302:8302 	-p 8302:8302/udp 	-p 8400:8400 	-p 8500:8500 	-p 172.17.0.1:53:53 	-p 172.17.0.1:53:53/udp 	-d 	progrium/consul -server -advertise 10.1.1.99 -bootstrap-expect 3
 
 reboot
