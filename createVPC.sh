@@ -160,6 +160,7 @@ CONSUL_ELB_SG=$(aws ec2 create-security-group --vpc-id $VPCID --group-name $VPCN
 aws ec2 authorize-security-group-ingress --group-id $CONSUL_ELB_SG --cidr 0.0.0.0/0 --protocol tcp --port 8500
 #Give access to the ELB to the consul security group
 aws ec2 authorize-security-group-ingress --group-id $CONSUL_SG --source-group $CONSUL_ELB_SG --protocol tcp --port 8500
+echo "aws elb create-load-balancer --load-balancer-name $VPCNAME-CONSUL-ELB --subnets $PUBLIC_SUBNET_1 $PUBLIC_SUBNET_2 --security-groups $CONSUL_ELB_SG --listeners Protocol=tcp,LoadBalancerPort=8500,InstanceProtocol=tcp,InstancePort=8500 --scheme Internal"
 CONSULELB=$(aws elb create-load-balancer --load-balancer-name "$VPCNAME"-CONSUL-ELB --subnets $PUBLIC_SUBNET_1 $PUBLIC_SUBNET_2 --security-groups $CONSUL_ELB_SG --listeners Protocol=tcp,LoadBalancerPort=8500,InstanceProtocol=tcp,InstancePort=8500 --scheme Internal)
 aws elb configure-health-check --load-balancer-name "$VPCNAME"-CONSUL-ELB --health-check Target=HTTP:8500/v1/catalog/nodes,Interval=30,UnhealthyThreshold=2,HealthyThreshold=4,Timeout=3
 aws elb register-instances-with-load-balancer --load-balancer-name "$VPCNAME"-CONSUL-ELB --instances $CONSUL1 $CONSUL2 $CONSUL3
