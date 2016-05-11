@@ -4,10 +4,8 @@ set -e
 
 echo "Creating consul cluster for VPC =$VPCNAME" 
 
-VPCID=$1
-VPCNAME=$2
-SUBNET1=$3
-SUBNET1=$4
+SUBNET1=$PUBLIC_SUBNET_1 
+SUBNET2=$PUBLIC_SUBNET_2
 
 
 CONSUL_SG=$(aws ec2 create-security-group --vpc-id $VPCID --group-name $VPCNAME"-consul" --description  "$VPCNAME consul service SG"|jq -r .GroupId)
