@@ -1,5 +1,7 @@
  #!/bin/sh
 
+set -e
+
 VPCNAME="$1"
 
 echo "Starting Process of Creating VPC With Name $VPCNAME" 
@@ -151,3 +153,14 @@ CONSUL2=$(aws ec2 run-instances --security-group-ids $CONSUL_SG --instance-type 
 aws ec2 create-tags --resources $CONSUL2  --tags Key=Name,Value="$VPCNAME"_CONSUL2
 CONSUL3=$(aws ec2 run-instances --security-group-ids $CONSUL_SG --instance-type $CONSUL_INSTANCE_TYPE --user-data "$CONSUL3_USER_DATA" --private-ip-address 10.1.2.100  --subnet-id $PUBLIC_SUBNET_2 --associate-public-ip-address --image-id ami-93e905fe|jq -r .Instances[0].InstanceId)
 aws ec2 create-tags --resources $CONSUL3  --tags Key=Name,Value="$VPCNAME"_CONSUL3
+
+#load balance the cluster
+
+CONSUL_ELB_SG=$(aws ec2 create-security-group --vpc-id $VPCID --group-name $VPCNAME"-consul" --description  "$VPCNAME consul service ELB SG"|jq -r .GroupId)
+aws ec2 authorize-security-group-ingress --group-id $CONSUL_ELB_SG --cidr 0.0.0.0/0 --protocol tcp --port 8500
+#Give access to the ELB to the consul security group
+aws ec2 authorize-security-group-ingress --group-id $CONSUL_SG --source-group $CONSUL_ELB_SG --protocol tcp --port 8500
+CONSULELB=$(aws elb create-load-balancer --load-balancer-name "$VPCNAME"_CONSUL_ELB --subnets $PUBLIC_SUBNET_1 PUBLIC_SUBNET_2 --security-groups $CONSUL_ELB_SG --listeners Protocol=tcp,LoadBalancerPort=8500,InstanceProtocol=tcp,InstancePort=8500 --scheme Internal)
+aws elb configure-health-check --load-balancer-name "$VPCNAME"_CONSUL_ELB --health-check Target=HTTP:8500/v1/catalog/nodes,Interval=30,UnhealthyThreshold=2,HealthyThreshold=4,Timeout=3
+aws elb register-instances-with-load-balancer --load-balancer-name "$VPCNAME"_CONSUL_ELB --instances $CONSUL1 $CONSUL2 $CONSUL3
+
