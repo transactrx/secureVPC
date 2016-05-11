@@ -137,7 +137,7 @@ echo "private subnet 2: $PRIVATE_SUBNET_2"
 
 echo "Internet GateWay: $INTERNET_GATEWAY" 
 
-export $VPCID $VPCNAME $PUBLIC_SUBNET_1 $PUBLIC_SUBNET_2
+export VPCID VPCNAME PUBLIC_SUBNET_1 PUBLIC_SUBNET_2
 #chmod +x ./addConsulCluster.sh
 ./addConsulCluster.sh
 
