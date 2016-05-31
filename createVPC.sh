@@ -3,6 +3,8 @@
 set -e
 
 VPCNAME="$1"
+DOMAIN_NAME="$2"
+AWS_REGION="$3"
 
 echo "Starting Process of Creating VPC With Name $VPCNAME" 
 
@@ -12,22 +14,22 @@ echo "VPC with ID $VPCID Created"
 aws ec2 create-tags --resources $VPCID  --tags Key=Name,Value=$VPCNAME
 
 
-PUBLIC_SUBNET_1=$(aws ec2 create-subnet --availability-zone us-east-1a --vpc-id $VPCID --cidr-block 10.1.1.0/24|grep SubnetId|awk '{print $2}'|sed 's/\"//g'|sed 's/,//g')
+PUBLIC_SUBNET_1=$(aws ec2 create-subnet --availability-zone "$AWS_REGION"a --vpc-id $VPCID --cidr-block 10.1.1.0/24|grep SubnetId|awk '{print $2}'|sed 's/\"//g'|sed 's/,//g')
 aws ec2 create-tags --resources $PUBLIC_SUBNET_1  --tags Key=Name,Value="$VPCNAME"_PUBLIC_SUBNET_1
 
 echo "Public subnet 1 was created with ID = $PUBLIC_SUBNET_1 "
 
-PRIVATE_SUBNET_1=$(aws ec2 create-subnet --availability-zone us-east-1a --vpc-id $VPCID --cidr-block 10.1.101.0/24|grep SubnetId|awk '{print $2}'|sed 's/\"//g'|sed 's/,//g')
+PRIVATE_SUBNET_1=$(aws ec2 create-subnet --availability-zone "$AWS_REGION"a --vpc-id $VPCID --cidr-block 10.1.101.0/24|grep SubnetId|awk '{print $2}'|sed 's/\"//g'|sed 's/,//g')
 aws ec2 create-tags --resources $PRIVATE_SUBNET_1  --tags Key=Name,Value="$VPCNAME"_PRIVATE_SUBNET_1
 
 echo "Private subnet 1 was created with ID = $PRIVATE_SUBNET_1 "
 
-PUBLIC_SUBNET_2=$(aws ec2 create-subnet --availability-zone us-east-1c --vpc-id $VPCID --cidr-block 10.1.2.0/24|grep SubnetId|awk '{print $2}'|sed 's/\"//g'|sed 's/,//g')
+PUBLIC_SUBNET_2=$(aws ec2 create-subnet --availability-zone "$AWS_REGION"c --vpc-id $VPCID --cidr-block 10.1.2.0/24|grep SubnetId|awk '{print $2}'|sed 's/\"//g'|sed 's/,//g')
 aws ec2 create-tags --resources $PUBLIC_SUBNET_2  --tags Key=Name,Value="$VPCNAME"_PUBLIC_SUBNET_2
 
 echo "Public subnet 2 was created with ID = $PUBLIC_SUBNET_2 "
 
-PRIVATE_SUBNET_2=$(aws ec2 create-subnet --availability-zone us-east-1c --vpc-id $VPCID --cidr-block 10.1.102.0/24|grep SubnetId|awk '{print $2}'|sed 's/\"//g'|sed 's/,//g')
+PRIVATE_SUBNET_2=$(aws ec2 create-subnet --availability-zone "$AWS_REGION"c --vpc-id $VPCID --cidr-block 10.1.102.0/24|grep SubnetId|awk '{print $2}'|sed 's/\"//g'|sed 's/,//g')
 aws ec2 create-tags --resources $PRIVATE_SUBNET_2  --tags Key=Name,Value="$VPCNAME"_PRIVATE_SUBNET_2
 
 echo "Private subnet 2 was created with ID = $PRIVATE_SUBNET_2 "
@@ -140,5 +142,11 @@ echo "Internet GateWay: $INTERNET_GATEWAY"
 export VPCID VPCNAME PUBLIC_SUBNET_1 PUBLIC_SUBNET_2
 #chmod +x ./addConsulCluster.sh
 ./addConsulCluster.sh
+
+aws route53 create-hosted-zone --name $DOMAIN_NAME --vpc VPCRegion=$AWS_REGION,VPCId=$VPCID
+
+./addSwarmCluster.sh
+
+
 
 #chmod +x ./addSwarmCluster.sh

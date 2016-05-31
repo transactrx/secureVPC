@@ -35,3 +35,6 @@ echo "aws elb create-load-balancer --load-balancer-name $VPCNAME-CONSUL-ELB --su
 CONSULELB=$(aws elb create-load-balancer --load-balancer-name "$VPCNAME"-CONSUL-ELB --subnets $SUBNET1 $SUBNET2 --security-groups $CONSUL_ELB_SG --listeners Protocol=tcp,LoadBalancerPort=8500,InstanceProtocol=tcp,InstancePort=8500 --scheme Internal)
 aws elb configure-health-check --load-balancer-name "$VPCNAME"-CONSUL-ELB --health-check Target=HTTP:8500/v1/catalog/nodes,Interval=30,UnhealthyThreshold=2,HealthyThreshold=4,Timeout=3
 aws elb register-instances-with-load-balancer --load-balancer-name "$VPCNAME"-CONSUL-ELB --instances $CONSUL1 $CONSUL2 $CONSUL3
+CONSUL_DNS_NAME=$(aws elb describe-load-balancers --load-balancer-names "$VPCNAME"-CONSUL-ELB |jq .LoadBalancerDescriptions[0].DNSName)
+
+export CONSUL_DNS_NAME
