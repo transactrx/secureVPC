@@ -3,10 +3,8 @@
 set -e
 
 
-VPCID=$1
-VPCNAME=$2
-SUBNET1=$3
-SUBNET1=$4
+SUBNET1=$PRIVATE_SUBNET_1
+SUBNET2=$PRIVATE_SUBNET_2
 
 
 SWARM_SG=$(aws ec2 create-security-group --vpc-id $VPCID --group-name $VPCNAME"-swarm" --description  "$VPCNAME swarm service SG"|jq -r .GroupId)

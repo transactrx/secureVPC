@@ -143,11 +143,11 @@ echo "private subnet 2: $PRIVATE_SUBNET_2"
 
 echo "Internet GateWay: $INTERNET_GATEWAY" 
 
-export VPCID VPCNAME PUBLIC_SUBNET_1 PUBLIC_SUBNET_2
+export VPCID VPCNAME PUBLIC_SUBNET_1 PUBLIC_SUBNET_2 PRIVATE_SUBNET_1 PRIVATE_SUBNET_2
 #chmod +x ./addConsulCluster.sh
 ./consul/addConsulCluster.sh
 
-aws route53 create-hosted-zone --name $DOMAIN_NAME --vpc VPCRegion=$AWS_REGION,VPCId=$VPCID
+#aws route53 create-hosted-zone --name $DOMAIN_NAME --vpc VPCRegion=$AWS_REGION,VPCId=$VPCID
 
 ./swarm/addSwarmCluster.sh
 

@@ -4,8 +4,8 @@ set -e
 
 echo "Creating consul cluster for VPC =$VPCNAME" 
 
-SUBNET1=$PUBLIC_SUBNET_1 
-SUBNET2=$PUBLIC_SUBNET_2
+SUBNET1=$PRIVATE_SUBNET_1 
+SUBNET2=$PRIVATE_SUBNET_2
 
 
 CONSUL_SG=$(aws ec2 create-security-group --vpc-id $VPCID --group-name $VPCNAME"-consul" --description  "$VPCNAME consul service SG"|jq -r .GroupId)
@@ -37,4 +37,4 @@ CONSULELB=$(aws elb create-load-balancer --load-balancer-name $CONSUL_ELB_NAME -
 aws elb configure-health-check --load-balancer-name $CONSUL_ELB_NAME --health-check Target=HTTP:8500/v1/catalog/nodes,Interval=30,UnhealthyThreshold=2,HealthyThreshold=4,Timeout=3
 aws elb register-instances-with-load-balancer --load-balancer-name $CONSUL_ELB_NAME --instances $CONSUL1 $CONSUL2 $CONSUL3
 export CONSUL_DNS_NAME=$(aws elb describe-load-balancers --load-balancer-names $CONSUL_ELB_NAME |jq .LoadBalancerDescriptions[0].DNSName)
-echo "Consulednsname=$CONSUL_DNS_NAME"
+echo "Consuldnsname=$CONSUL_DNS_NAME"
