@@ -1,10 +1,14 @@
  #!/bin/sh
 
+export DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 set -e
 
 VPCNAME="$1"
 DOMAIN_NAME="$2"
 AWS_REGION="$3"
+
+
 
 echo "Starting Process of Creating VPC With Name $VPCNAME" 
 
@@ -141,11 +145,11 @@ echo "Internet GateWay: $INTERNET_GATEWAY"
 
 export VPCID VPCNAME PUBLIC_SUBNET_1 PUBLIC_SUBNET_2
 #chmod +x ./addConsulCluster.sh
-./addConsulCluster.sh
+./consul/addConsulCluster.sh
 
 aws route53 create-hosted-zone --name $DOMAIN_NAME --vpc VPCRegion=$AWS_REGION,VPCId=$VPCID
 
-./addSwarmCluster.sh
+./swarm/addSwarmCluster.sh
 
 
 

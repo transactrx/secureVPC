@@ -13,9 +13,9 @@ aws ec2 authorize-security-group-ingress --group-id $CONSUL_SG --source-group $C
 aws ec2 authorize-security-group-ingress --group-id $CONSUL_SG --source-group $CONSUL_SG --protocol udp --port 0-65535 
 aws ec2 authorize-security-group-ingress --group-id $CONSUL_SG --source-group $CONSUL_SG --protocol icmp --port -1
 
-CONSUL1_USER_DATA=$(cat consul1_userdata.sh|base64)
-CONSUL2_USER_DATA=$(cat consul2_userdata.sh|base64)
-CONSUL3_USER_DATA=$(cat consul3_userdata.sh|base64)
+CONSUL1_USER_DATA=$(cat $DIR/consul/consul1_userdata.sh|base64)
+CONSUL2_USER_DATA=$(cat $DIR/consul/consul2_userdata.sh|base64)
+CONSUL3_USER_DATA=$(cat $DIR/consul/consul3_userdata.sh|base64)
 CONSUL_INSTANCE_TYPE=t2.nano 
 
 CONSUL1=$(aws ec2 run-instances --security-group-ids $CONSUL_SG --instance-type $CONSUL_INSTANCE_TYPE --subnet-id $SUBNET1 --private-ip-address 10.1.1.99 --associate-public-ip-address --image-id ami-93e905fe --user-data "$CONSUL1_USER_DATA"|jq -r .Instances[0].InstanceId)
