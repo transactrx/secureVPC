@@ -17,11 +17,11 @@ SWARM2_USER_DATA=$(cat swarm2_userdata.sh|sed s/CONSUL_DNS_NAME/$CONSUL_DNS_NAME
 SWARM3_USER_DATA=$(cat swarm3_userdata.sh|sed s/CONSUL_DNS_NAME/$CONSUL_DNS_NAME/g|base64)
 SWARM_INSTANCE_TYPE=t2.nano 
 
-SWARM1=$(aws ec2 run-instances --security-group-ids $SWARM_SG --instance-type $SWARM_INSTANCE_TYPE --subnet-id $SUBNET1 --private-ip-address 10.1.1.99 --associate-public-ip-address --image-id ami-93e905fe --user-data "$SWARM1_USER_DATA"|jq -r .Instances[0].InstanceId)
+SWARM1=$(aws ec2 run-instances --security-group-ids $SWARM_SG --instance-type $SWARM_INSTANCE_TYPE --subnet-id $SUBNET2 --private-ip-address 10.1.102.199 --image-id ami-93e905fe --user-data "$SWARM1_USER_DATA"|jq -r .Instances[0].InstanceId)
 aws ec2 create-tags --resources $SWARM1  --tags Key=Name,Value="$VPCNAME"_SWARM1
-SWARM2=$(aws ec2 run-instances --security-group-ids $SWARM_SG --instance-type $SWARM_INSTANCE_TYPE --user-data "$SWARM2_USER_DATA" --private-ip-address 10.1.2.99  --subnet-id $SUBNET2 --associate-public-ip-address --image-id ami-93e905fe|jq -r .Instances[0].InstanceId)
+SWARM2=$(aws ec2 run-instances --security-group-ids $SWARM_SG --instance-type $SWARM_INSTANCE_TYPE --user-data "$SWARM2_USER_DATA" --private-ip-address 10.1.101.199  --subnet-id $SUBNET1 --image-id ami-93e905fe|jq -r .Instances[0].InstanceId)
 aws ec2 create-tags --resources $SWARM2  --tags Key=Name,Value="$VPCNAME"_SWARM2
-SWARM3=$(aws ec2 run-instances --security-group-ids $SWARM_SG --instance-type $SWARM_INSTANCE_TYPE --user-data "$SWARM3_USER_DATA" --private-ip-address 10.1.2.100  --subnet-id $SUBNET2 --associate-public-ip-address --image-id ami-93e905fe|jq -r .Instances[0].InstanceId)
+SWARM3=$(aws ec2 run-instances --security-group-ids $SWARM_SG --instance-type $SWARM_INSTANCE_TYPE --user-data "$SWARM3_USER_DATA" --private-ip-address 10.1.101.200  --subnet-id $SUBNET1 --image-id ami-93e905fe|jq -r .Instances[0].InstanceId)
 aws ec2 create-tags --resources $SWARM3  --tags Key=Name,Value="$VPCNAME"_SWARM3
 
 #load balance the cluster
