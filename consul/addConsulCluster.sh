@@ -8,7 +8,7 @@ SUBNET1=$PRIVATE_SUBNET_1
 SUBNET2=$PRIVATE_SUBNET_2
 
 
-CONSUL_SG=$(aws ec2 create-security-group --vpc-id $VPCID --group-name $VPCNAME"-consul" --description  "$VPCNAME consul service SG"|jq -r .GroupId)
+export CONSUL_SG=$(aws ec2 create-security-group --vpc-id $VPCID --group-name $VPCNAME"-consul" --description  "$VPCNAME consul service SG"|jq -r .GroupId)
 aws ec2 authorize-security-group-ingress --group-id $CONSUL_SG --source-group $CONSUL_SG --protocol tcp --port 0-65535 
 aws ec2 authorize-security-group-ingress --group-id $CONSUL_SG --source-group $CONSUL_SG --protocol udp --port 0-65535 
 aws ec2 authorize-security-group-ingress --group-id $CONSUL_SG --source-group $CONSUL_SG --protocol icmp --port -1
@@ -18,16 +18,16 @@ CONSUL2_USER_DATA=$(cat $DIR/consul/consul2_userdata.sh|base64)
 CONSUL3_USER_DATA=$(cat $DIR/consul/consul3_userdata.sh|base64)
 CONSUL_INSTANCE_TYPE=t2.nano 
 
-CONSUL1=$(aws ec2 run-instances --security-group-ids $CONSUL_SG --instance-type $CONSUL_INSTANCE_TYPE --subnet-id $SUBNET1 --private-ip-address 10.1.101.99 --associate-public-ip-address --image-id ami-10ae537d --user-data "$CONSUL1_USER_DATA"|jq -r .Instances[0].InstanceId)
+export CONSUL1=$(aws ec2 run-instances --security-group-ids $CONSUL_SG --instance-type $CONSUL_INSTANCE_TYPE --subnet-id $SUBNET1 --private-ip-address 10.1.101.99 --associate-public-ip-address --image-id ami-10ae537d --user-data "$CONSUL1_USER_DATA"|jq -r .Instances[0].InstanceId)
 aws ec2 create-tags --resources $CONSUL1  --tags Key=Name,Value="$VPCNAME"_CONSUL1
-CONSUL2=$(aws ec2 run-instances --security-group-ids $CONSUL_SG --instance-type $CONSUL_INSTANCE_TYPE --user-data "$CONSUL2_USER_DATA" --private-ip-address 10.1.102.99  --subnet-id $SUBNET2 --image-id ami-10ae537d|jq -r .Instances[0].InstanceId)
+export CONSUL2=$(aws ec2 run-instances --security-group-ids $CONSUL_SG --instance-type $CONSUL_INSTANCE_TYPE --user-data "$CONSUL2_USER_DATA" --private-ip-address 10.1.102.99  --subnet-id $SUBNET2 --image-id ami-10ae537d|jq -r .Instances[0].InstanceId)
 aws ec2 create-tags --resources $CONSUL2  --tags Key=Name,Value="$VPCNAME"_CONSUL2
-CONSUL3=$(aws ec2 run-instances --security-group-ids $CONSUL_SG --instance-type $CONSUL_INSTANCE_TYPE --user-data "$CONSUL3_USER_DATA" --private-ip-address 10.1.102.100  --subnet-id $SUBNET2 --image-id ami-10ae537d|jq -r .Instances[0].InstanceId)
+export CONSUL3=$(aws ec2 run-instances --security-group-ids $CONSUL_SG --instance-type $CONSUL_INSTANCE_TYPE --user-data "$CONSUL3_USER_DATA" --private-ip-address 10.1.102.100  --subnet-id $SUBNET2 --image-id ami-10ae537d|jq -r .Instances[0].InstanceId)
 aws ec2 create-tags --resources $CONSUL3  --tags Key=Name,Value="$VPCNAME"_CONSUL3
 
 #load balance the cluster
 
-CONSUL_ELB_SG=$(aws ec2 create-security-group --vpc-id $VPCID --group-name $VPCNAME"-consul-elb" --description  "$VPCNAME consul service ELB SG"|jq -r .GroupId)
+export CONSUL_ELB_SG=$(aws ec2 create-security-group --vpc-id $VPCID --group-name $VPCNAME"-consul-elb" --description  "$VPCNAME consul service ELB SG"|jq -r .GroupId)
 aws ec2 authorize-security-group-ingress --group-id $CONSUL_ELB_SG --cidr 0.0.0.0/0 --protocol tcp --port 8500
 #Give access to the ELB to the consul security group
 

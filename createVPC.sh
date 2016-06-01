@@ -151,7 +151,8 @@ export VPCID VPCNAME PUBLIC_SUBNET_1 PUBLIC_SUBNET_2 PRIVATE_SUBNET_1 PRIVATE_SU
 
 export CONSUL_RESULT=$(cat $DIR/consulclusterresult.json)
 
-echo "CONSUL CREATED.. DNSName = "$CONSUL_RESULT|jq -r .CONSUL_DNS_NAME
+echo "Finished creating consul.. here is some information";
+echo $CONSUL_RESULT|jq -r .CONSUL_DNS_NAME
 
 #aws route53 create-hosted-zone --name $DOMAIN_NAME --vpc VPCRegion=$AWS_REGION,VPCId=$VPCID
 
