@@ -5,8 +5,37 @@ echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCd6z5m1NOdHhjdXT4ltZuNdJN7doKOBiRBX0
 
 echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDZlrf0UCfHlQm184M4g/7+RSSqUmDbmrtQw4qCLHZ8ZNH/K0Zl8bqf+o4Y/l+VDSaclLc4gtoV95IezgMP94rlee+eFNAGAdtxhPUJPSvHgzY4TvSK2x4NSeTEDfsP+nxMNeZ4UPfVw1GZqmy8Z48mD6nbm2v0Oyt90PfpkyoNfqfIICmBQpTEZ6agw2iWoYVbqUSjC/V5RuKVkZK8QQNAjfXjaw9AIMPzLlkpAq4TGPK3jdHElgZTEZSWYXxDi7fB8sABvgMP0mE3LhpQfCZgcLwESAA6Ypth0mjm0eIjRUdN1xTficWoVT5EI1WUMI2y2GPQzdeTzCPzgJzK373J oresteslorda@Orestess-MBP" >> /home/ec2-user/.ssh/authorized_keys
 
-yum update -y
-yum install docker -y
+
+
+function installDocker {
+	set +e
+	echo "updating yum"
+	yum update -y
+	if [ $? -eq 0 ]; then
+		YUM_UPDATED='yes'
+	else
+		YUM_UPDATED='no'
+	fi
+	yum install docker -y	
+	if [ $? -eq 0 ]; then
+		DOCKER_UPDATED='yes'
+	else
+		DOCKER_UPDATED='no'
+	fi
+	set -e
+}
+
+installDocker
+attempt=1
+while [DOCKER_UPDATED != 'yes']||[YUM_UPDATED != 'yes'] && [attempt<6] 
+do
+	wait 120
+	echo "Attempt to install docker again " +$attempt
+	attempt=`expr $attempt + 1`
+	installDocker
+done
+##finished installing docker
+
 service docker start
 mkdir -p /opt/consuldata
 
@@ -20,7 +49,7 @@ docker run --name consul2 --restart=always -h consul2 \
 	-p 8500:8500 \
 	-p 172.17.0.1:53:53 \
 	-p 172.17.0.1:53:53/udp -d \
-	progrium/consul -server  -join 10.1.1.99 -advertise 10.1.2.99 \
+	progrium/consul -server  -join 10.1.101.99 -advertise 10.1.102.99 \
 	 -ui-dir /ui
 
 echo "service docker start" >> /etc/rc.local
