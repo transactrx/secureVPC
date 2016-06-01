@@ -40,12 +40,12 @@ export CONSUL_DNS_NAME=$(aws elb describe-load-balancers --load-balancer-names $
 
 echo "  var x={};\
 		x.CONSUL_SG=process.env.CONSUL_SG;\
-		x.CONSUL_INSTANCE_ID1=process.env.CONSUL1\
-		x.CONSUL_INSTANCE_ID2=process.env.CONSUL2\
-		x.CONSUL_INSTANCE_ID3=process.env.CONSUL3\
-		x.CONSUL_ELB_SG=process.env.CONSUL_ELB_SG\
-		x.CONSUL_DNS_NAME=process.env.CONSUL_DNS_NAME
-		x.CONSUL_PORT='8500'\
+		x.CONSUL_INSTANCE_ID1=process.env.CONSUL1;\
+		x.CONSUL_INSTANCE_ID2=process.env.CONSUL2;\
+		x.CONSUL_INSTANCE_ID3=process.env.CONSUL3;\
+		x.CONSUL_ELB_SG=process.env.CONSUL_ELB_SG;\
+		x.CONSUL_DNS_NAME=process.env.CONSUL_DNS_NAME;\
+		x.CONSUL_PORT='8500';\
 	    console.log(JSON.stringify(x))"|node > $DIR/consulclusterresult.json
 
 
