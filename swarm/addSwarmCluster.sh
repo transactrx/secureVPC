@@ -23,7 +23,7 @@ SWARM1=$(aws ec2 run-instances --security-group-ids $SWARM_SG --instance-type $S
 SWARM2=$(aws ec2 run-instances --security-group-ids $SWARM_SG --instance-type $SWARM_INSTANCE_TYPE --user-data "$SWARM2_USER_DATA" --private-ip-address 10.1.101.199  --subnet-id $SUBNET1 --image-id ami-10ae537d|jq -r .Instances[0].InstanceId)
 SWARM3=$(aws ec2 run-instances --security-group-ids $SWARM_SG --instance-type $SWARM_INSTANCE_TYPE --user-data "$SWARM3_USER_DATA" --private-ip-address 10.1.101.200  --subnet-id $SUBNET1 --image-id ami-10ae537d|jq -r .Instances[0].InstanceId)
 
-wait 10
+sleep 10
 aws ec2 create-tags --resources $SWARM1  --tags Key=Name,Value="$VPCNAME"_SWARM1
 aws ec2 create-tags --resources $SWARM2  --tags Key=Name,Value="$VPCNAME"_SWARM2
 aws ec2 create-tags --resources $SWARM3  --tags Key=Name,Value="$VPCNAME"_SWARM3
