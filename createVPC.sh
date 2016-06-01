@@ -164,7 +164,7 @@ export CONSUL_DNS_NAME=$(aws elb describe-load-balancers --load-balancer-names $
 export SWARM_RESULT=$(cat $DIR/swarmclusterresult.json)
 
 echo "Finished creating swarm cluster .. here is some information";
-echo $CONSUL_RESULT|jq -r .SWARM_DNS_NAME
+echo $SWARM_RESULT|jq -r .SWARM_DNS_NAME
 
 
 #chmod +x ./addSwarmCluster.sh
