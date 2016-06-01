@@ -156,11 +156,15 @@ echo $CONSUL_RESULT|jq -r .CONSUL_DNS_NAME
 
 #aws route53 create-hosted-zone --name $DOMAIN_NAME --vpc VPCRegion=$AWS_REGION,VPCId=$VPCID
 
-export CONSUL_DNS_NAME=$(aws elb describe-load-balancers --load-balancer-names $CONSUL_ELB_NAME |jq -r .LoadBalancerDescriptions[0].DNSName)
-
-
 ./swarm/addSwarmCluster.sh
 
+
+export CONSUL_DNS_NAME=$(aws elb describe-load-balancers --load-balancer-names $CONSUL_ELB_NAME |jq -r .LoadBalancerDescriptions[0].DNSName)
+
+export SWARM_RESULT=$(cat $DIR/swarmclusterresult.json)
+
+echo "Finished creating swarm cluster .. here is some information";
+echo $CONSUL_RESULT|jq -r .SWARM_DNS_NAME
 
 
 #chmod +x ./addSwarmCluster.sh
