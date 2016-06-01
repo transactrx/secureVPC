@@ -31,6 +31,6 @@ aws ec2 authorize-security-group-ingress --group-id $SWARM_ELB_SG --cidr 0.0.0.0
 #Give access to the ELB to the swarm security group
 aws ec2 authorize-security-group-ingress --group-id $SWARM_SG --source-group $SWARM_ELB_SG --protocol tcp --port 4000
 echo "aws elb create-load-balancer --load-balancer-name $VPCNAME-SWARM-ELB --subnets $SUBNET1 $SUBNET2 --security-groups $SWARM_ELB_SG --listeners Protocol=tcp,LoadBalancerPort=4000,InstanceProtocol=tcp,InstancePort=4000 --scheme Internal"
-SWARMELB=$(aws elb create-load-balancer --load-balancer-name "$VPCNAME"-SWARM-ELB --subnets $SUBNET1 $SUBNET2 --security-groups $SWARM_ELB_SG --listeners Protocol=tcp,LoadBalancerPort=4000,InstanceProtocol=tcp,InstancePort=8500 --scheme Internal)
+SWARMELB=$(aws elb create-load-balancer --load-balancer-name "$VPCNAME"-SWARM-ELB --subnets $SUBNET1 $SUBNET2 --security-groups $SWARM_ELB_SG --listeners Protocol=tcp,LoadBalancerPort=4000,InstanceProtocol=tcp,InstancePort=4000 --scheme Internal)
 aws elb configure-health-check --load-balancer-name "$VPCNAME"-SWARM-ELB --health-check Target=TCP:4000,Interval=30,UnhealthyThreshold=2,HealthyThreshold=4,Timeout=3
 aws elb register-instances-with-load-balancer --load-balancer-name "$VPCNAME"-SWARM-ELB --instances $SWARM1 $SWARM2 $SWARM3
