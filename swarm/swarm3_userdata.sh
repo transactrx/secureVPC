@@ -5,8 +5,6 @@ echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCd6z5m1NOdHhjdXT4ltZuNdJN7doKOBiRBX0
 echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDZlrf0UCfHlQm184M4g/7+RSSqUmDbmrtQw4qCLHZ8ZNH/K0Zl8bqf+o4Y/l+VDSaclLc4gtoV95IezgMP94rlee+eFNAGAdtxhPUJPSvHgzY4TvSK2x4NSeTEDfsP+nxMNeZ4UPfVw1GZqmy8Z48mD6nbm2v0Oyt90PfpkyoNfqfIICmBQpTEZ6agw2iWoYVbqUSjC/V5RuKVkZK8QQNAjfXjaw9AIMPzLlkpAq4TGPK3jdHElgZTEZSWYXxDi7fB8sABvgMP0mE3LhpQfCZgcLwESAA6Ypth0mjm0eIjRUdN1xTficWoVT5EI1WUMI2y2GPQzdeTzCPzgJzK373J oresteslorda@Orestess-MBP" >> /home/ec2-user/.ssh/authorized_keys
 
 
-
-
 function installDocker {
 	set +e
 	echo "updating yum"
@@ -27,7 +25,8 @@ function installDocker {
 
 installDocker
 attempt=1
-while [DOCKER_UPDATED != 'yes']||[YUM_UPDATED != 'yes'] && [attempt<6] 
+#we will try for 10 minutes;
+while [$DOCKER_UPDATED != 'yes']||[$YUM_UPDATED != 'yes'] && [$attempt<6] 
 do
 	wait 120
 	echo "Attempt to install docker again " +$attempt

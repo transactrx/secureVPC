@@ -26,7 +26,8 @@ function installDocker {
 
 installDocker
 attempt=1
-while [DOCKER_UPDATED != 'yes']||[YUM_UPDATED != 'yes'] && [attempt<6] 
+#we will try for 10 minutes;
+while [$DOCKER_UPDATED != 'yes']||[$YUM_UPDATED != 'yes'] && [$attempt<6] 
 do
 	wait 120
 	echo "Attempt to install docker again " +$attempt

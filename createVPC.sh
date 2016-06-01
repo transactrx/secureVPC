@@ -82,9 +82,9 @@ RT_PRIVATE_SUB2=$(aws ec2 create-route-table --vpc-id $VPCID | grep RouteTableId
 
 echo "aws ec2 create-nat-gateway --subnet-id $PRIVATE_SUBNET_1 --allocation-id $NAT_ALLOCATION1 |grep NatGatewayId|awk '{print $2}'|sed 's/\"//g'|sed 's/,//g'"
 
-NAT_GATEWAY_1=$(aws ec2 create-nat-gateway --subnet-id $PRIVATE_SUBNET_1 --allocation-id $NAT_ALLOCATION1 |grep NatGatewayId|awk '{print $2}'|sed 's/\"//g'|sed 's/,//g')
+NAT_GATEWAY_1=$(aws ec2 create-nat-gateway --subnet-id $PUBLIC_SUBNET_1 --allocation-id $NAT_ALLOCATION1 |grep NatGatewayId|awk '{print $2}'|sed 's/\"//g'|sed 's/,//g')
 
-NAT_GATEWAY_2=$(aws ec2 create-nat-gateway --subnet-id $PRIVATE_SUBNET_2 --allocation-id $NAT_ALLOCATION2 |grep NatGatewayId|awk '{print $2}'|sed 's/\"//g'|sed 's/,//g')
+NAT_GATEWAY_2=$(aws ec2 create-nat-gateway --subnet-id $PUBLIC_SUBNET_2 --allocation-id $NAT_ALLOCATION2 |grep NatGatewayId|awk '{print $2}'|sed 's/\"//g'|sed 's/,//g')
 
 
 echo "Waiting for Nat Gateway to become available..."
