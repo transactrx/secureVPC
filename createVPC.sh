@@ -8,6 +8,8 @@ VPCNAME="$1"
 DOMAIN_NAME="$2"
 AWS_REGION="$3"
 
+export CONSUL_ELB_NAME="$VPCNAME"-CONSUL-ELB
+
 
 
 echo "Starting Process of Creating VPC With Name $VPCNAME" 
@@ -148,6 +150,9 @@ export VPCID VPCNAME PUBLIC_SUBNET_1 PUBLIC_SUBNET_2 PRIVATE_SUBNET_1 PRIVATE_SU
 ./consul/addConsulCluster.sh
 
 #aws route53 create-hosted-zone --name $DOMAIN_NAME --vpc VPCRegion=$AWS_REGION,VPCId=$VPCID
+
+export CONSUL_DNS_NAME=$(aws elb describe-load-balancers --load-balancer-names $CONSUL_ELB_NAME |jq -r .LoadBalancerDescriptions[0].DNSName)
+
 
 ./swarm/addSwarmCluster.sh
 

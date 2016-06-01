@@ -30,7 +30,7 @@ aws ec2 create-tags --resources $CONSUL3  --tags Key=Name,Value="$VPCNAME"_CONSU
 CONSUL_ELB_SG=$(aws ec2 create-security-group --vpc-id $VPCID --group-name $VPCNAME"-consul-elb" --description  "$VPCNAME consul service ELB SG"|jq -r .GroupId)
 aws ec2 authorize-security-group-ingress --group-id $CONSUL_ELB_SG --cidr 0.0.0.0/0 --protocol tcp --port 8500
 #Give access to the ELB to the consul security group
-CONSUL_ELB_NAME="$VPCNAME"-CONSUL-ELB
+
 aws ec2 authorize-security-group-ingress --group-id $CONSUL_SG --source-group $CONSUL_ELB_SG --protocol tcp --port 8500
 echo "aws elb create-load-balancer --load-balancer-name $CONSUL_ELB_NAME --subnets $SUBNET1 $SUBNET2 --security-groups $CONSUL_ELB_SG --listeners Protocol=tcp,LoadBalancerPort=8500,InstanceProtocol=tcp,InstancePort=8500 --scheme Internal"
 CONSULELB=$(aws elb create-load-balancer --load-balancer-name $CONSUL_ELB_NAME --subnets $SUBNET1 $SUBNET2 --security-groups $CONSUL_ELB_SG --listeners Protocol=tcp,LoadBalancerPort=8500,InstanceProtocol=tcp,InstancePort=8500 --scheme Internal)

@@ -6,6 +6,8 @@ set -e
 SUBNET1=$PRIVATE_SUBNET_1
 SUBNET2=$PRIVATE_SUBNET_2
 
+echo $CONSUL_DNS_NAME
+
 
 SWARM_SG=$(aws ec2 create-security-group --vpc-id $VPCID --group-name $VPCNAME"-swarm" --description  "$VPCNAME swarm service SG"|jq -r .GroupId)
 aws ec2 authorize-security-group-ingress --group-id $SWARM_SG --source-group $SWARM_SG --protocol tcp --port 0-65535 
