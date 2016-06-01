@@ -38,6 +38,6 @@ done
 service docker start
 mkdir -p /opt/consuldata
 ipaddr=$(ifconfig | awk '/inet addr/{print substr($2,6)}'|grep 10.)
-docker run -d -p 4000:4000 swarm manage -H :4000 --replication --advertise $ipaddr:4000 consul://CONSUL_DNS_NAME:8500
+docker run -d --restart=always -p 4000:4000 swarm manage -H :4000 --replication --advertise $ipaddr:4000 consul://CONSUL_DNS_NAME:8500
 echo "service docker start" >> /etc/rc.local
 reboot
