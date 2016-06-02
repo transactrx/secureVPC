@@ -167,8 +167,8 @@ echo "Finished creating swarm cluster .. here is some information";
 echo $SWARM_RESULT|jq -r .SWARM_DNS_NAME
 
 echo "  var x={};\
-		x.CONSUL=process.env.CONSUL_RESULT;\
-		x.SWARM=process.env.SWARM_RESULT;\
+		x.CONSUL=JSON.parse(process.env.CONSUL_RESULT);\
+		x.SWARM=JSON.parse(process.env.SWARM_RESULT);\
 	    console.log(JSON.stringify(x))"|node > $DIR/secureVPCResult.json
 
 #chmod +x ./addSwarmCluster.sh
